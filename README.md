@@ -9,6 +9,12 @@ cd /var/mastodon
 docker-compose run --rm web bundle exec rake mastodon:setup
 ```
 
+Running tootctl commands
+```
+cd /var/mastodon
+docker-compose run --rm web tootctl [command]
+```
+
 CAVEAT:
 We overwrite the plesk-generated nginx config. Should Plesk overwrite that again, you can copy the file over from /var/mastodon and reload nginx (or use the included nginx.sh script).
 
