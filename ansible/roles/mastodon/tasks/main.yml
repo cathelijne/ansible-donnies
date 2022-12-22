@@ -1,12 +1,12 @@
-- name: Create /var/mastodon
+- name: Create /var/www/vhosts/dedonnie.social/docker
   ansible.builtin.file:
-    path: /var/mastodon
+    path: /var/www/vhosts/dedonnie.social/docker
     state: directory
 
 - name: Copy docker-compose.yml
   ansible.builtin.copy:
     src: files/{{ item }}
-    dest: /var/mastodon/{{ item }}
+    dest: /var/www/vhosts/dedonnie.social/docker/{{ item }}
   loop:
   - docker-compose.yml
   - .env.production
@@ -16,7 +16,7 @@
 
 - name: Deploy mastodon
   community.docker.docker_compose:
-    project_src: /var/mastodon/
+    project_src: /var/www/vhosts/dedonnie.social/docker/
     files:
     - docker-compose.yml
 
