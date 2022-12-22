@@ -19,4 +19,7 @@ CAVEAT:
 We overwrite the plesk-generated nginx config. Should Plesk overwrite that again, you can copy the file over from /var/mastodon and reload nginx (or use the included nginx.sh script).
 
 TODO:
-I couldn't get Plesk to get LE certificates. Also, the mailserver requires a password, but it won't accept the one I used when creating the mail user.
+- postgresql backups
+- set public directory to be owned by mastodon user (uid/gid 991)
+- choose a better location on the filesystem -> have only files that need to be backed up in the Plesk webdir
+- automate nginx config restorer after plesk wrote to it
