@@ -1,0 +1,31 @@
+- name: Create /var/mastodon
+  ansible.builtin.file:
+    path: /var/mastodon
+    state: directory
+
+- name: Copy docker-compose.yml
+  ansible.builtin.copy:
+    src: files/{{ item }}
+    dest: /var/mastodon/{{ item }}
+  loop:
+  - docker-compose.yml
+  - .env.production
+  - nginx.sh
+  - nginx.conf
+  - setup.sh
+
+- name: Deploy mastodon
+  community.docker.docker_compose:
+    project_src: /var/mastodon/
+    files:
+    - docker-compose.yml
+
+- name: Copy nginx.conf
+  ansible.builtin.copy:
+    src: files/nginx.conf
+    dest: /var/www/vhosts/system/dedonnie.social/conf/nginx.conf
+
+- name: Reload nginx
+  systemd:
+    name: nginx
+    state: reloaded

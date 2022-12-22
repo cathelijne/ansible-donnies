@@ -1,0 +1,7 @@
+# code: language=ansible
+---
+- hosts: all
+  tasks:
+  - name: Display all variables/facts known for a host
+    debug:
+      var: hostvars[groups['master'][0]]['ansible_eth1']['ipv4']['address']

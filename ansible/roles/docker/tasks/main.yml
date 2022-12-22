@@ -1,0 +1,10 @@
+---
+- name: Install docker-compose (it will pull in docker)
+  ansible.builtin.apt:
+    state: present
+    pkg: docker-compose
+
+- name: Make sure docker is running
+  ansible.builtin.service:
+    name: docker
+    state: started

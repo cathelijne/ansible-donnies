@@ -1,0 +1,14 @@
+# code: language=ansible
+---
+- name: Ensure en_US UTF8 locale
+  community.general.locale_gen:
+    name: en_US.UTF-8
+    state: present
+  notify: Set default locale
+
+- name: Fix iTerm2 passes LC_CTYPE with ssh, so set this to avoid it being just UTF-8, which prevents mosh from running
+  ansible.builtin.lineinfile:
+    path: /etc/default/locale
+    mode: 0644
+    line: LC_CTYPE=en_US.UTF-8
+    create: true

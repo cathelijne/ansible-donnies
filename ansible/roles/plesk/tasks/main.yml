@@ -1,0 +1,26 @@
+- name: Check whether Plesk is running
+  ansible.builtin.command: plesk bin service -t web
+  register: pstatus
+  ignore_errors: True
+
+- name: Install plesk
+  ansible.builtin.include_tasks: install.yml
+  when: pstatus.stdout_lines[0] != "is running"
+
+- name: Check if the domain is already there
+  ansible.builtin.shell: plesk bin subscription -l |grep {{ domain }}
+  register: out
+  ignore_errors: True
+
+- name: Create subscription
+  ansible.builtin.command: plesk bin subscription -c {{ domain }} -owner admin -www false -hosting true -login caroline -passwd "{{ plesk.admin_password }}" -ip {{ ansible_default_ipv4.address }}
+  when: out.rc == 1
+
+- name: Check if the mail is already there
+  ansible.builtin.shell: plesk bin mail -l |grep admin
+  register: mail
+  ignore_errors: True
+
+- name: Create mail
+  ansible.builtin.command: plesk bin mail --create admin@dedonnie.social -passwd "{{ plesk.admin_password }}" -mbox_quota 100M
+  when: mail.rc == 1

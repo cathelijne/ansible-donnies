@@ -1,0 +1,26 @@
+# code: language=ansible
+---
+- name: Check if this is a first install
+  ansible.builtin.stat:
+    path: "/var/lock/ansible_firstrun.lock"
+  register: lock
+
+- name: Include first_install.yml
+  ansible.builtin.include_tasks: first_install.yml
+  when: not lock.stat.exists
+
+- name: Include apt_update.yml
+  ansible.builtin.include_tasks: apt_update.yml
+
+- name: Include packages.yml
+  ansible.builtin.include_tasks: packages.yml
+
+- name: Include locales.yml
+  ansible.builtin.include_tasks: locales.yml
+
+- name: Copy ssh keys
+  ansible.builtin.copy:
+    src: files/authorized_keys
+    dest: /root/.ssh/authorized_keys
+    mode: 0600
+

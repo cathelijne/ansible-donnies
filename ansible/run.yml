@@ -1,0 +1,8 @@
+---
+- name: Basic installation
+  hosts: all
+  roles:
+  - all
+  - plesk
+  - docker
+  - mastodon

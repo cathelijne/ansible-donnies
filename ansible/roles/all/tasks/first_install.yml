@@ -1,0 +1,14 @@
+# code: language=ansible
+---
+- name: Update apt and upgrade
+  ansible.builtin.apt:
+    update_cache: true
+    upgrade: true
+    autoclean: true
+    autoremove: true
+
+- name: Touch lock
+  ansible.builtin.file:
+    path: "/var/lock/ansible_firstrun.lock"
+    mode: 0644
+    state: '{{ "file" if lock.stat.exists else "touch" }}'
