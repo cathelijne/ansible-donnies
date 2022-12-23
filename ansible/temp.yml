@@ -2,4 +2,4 @@
 - name: Basic installation
   hosts: all
   roles:
-  - all
+  - mastodon

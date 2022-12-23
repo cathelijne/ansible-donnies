@@ -1,12 +1,12 @@
-- name: Create /var/www/vhosts/dedonnie.social/docker
+- name: Create /var/mastodon
   ansible.builtin.file:
-    path: /var/www/vhosts/dedonnie.social/docker
+    path: /var/mastodon
     state: directory
 
 - name: Copy docker-compose.yml
   ansible.builtin.copy:
     src: files/{{ item }}
-    dest: /var/www/vhosts/dedonnie.social/docker/{{ item }}
+    dest: /var/mastodon/{{ item }}
   loop:
   - docker-compose.yml
   - .env.production
@@ -16,7 +16,7 @@
 
 - name: Deploy mastodon
   community.docker.docker_compose:
-    project_src: /var/www/vhosts/dedonnie.social/docker/
+    project_src: /var/mastodon/
     files:
     - docker-compose.yml
 
@@ -29,3 +29,43 @@
   systemd:
     name: nginx
     state: reloaded
+
+- name: Backup db
+  ansible.builtin.cron:
+    name: DB Backup
+    hour: 5
+    minute: 22
+    state: present
+    job: docker exec -it mastodon_db_1 su - postgres bash -c "pg_dump postgres > /backups/$(date --iso-8601).sql"
+
+- name: Set file and dir permissions and owner for mastodon dir
+  ansible.builtin.file:
+    path: /var/mastodon/redis
+    owner: 999
+    mode: 0755
+
+- name: Set file and dir permissions and owner for db backup dir
+  ansible.builtin.file:
+    path: /var/mastodon/postgres14
+    owner: 70
+    mode: 0700
+
+- name: Set file and dir permissions and owner for mastodon cache dir
+  ansible.builtin.file:
+    path: /var/cache/mastodon/
+    owner: 991
+    mode: 0755
+
+- name: Set file and dir permissions and owner for plesk mastodon dir
+  ansible.builtin.file:
+    path: /var/www/vhosts/dedonnie.social/mastodon
+    owner: 991
+    group: 1002
+    mode: 02775
+
+- name: Set file and dir permissions and owner for db backup dir
+  ansible.builtin.file:
+    path: /var/www/vhosts/dedonnie.social/mastodon/db_backups
+    owner: 70
+    group: 1002
+    mode: 02775

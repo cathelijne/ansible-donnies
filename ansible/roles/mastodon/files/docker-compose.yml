@@ -10,6 +10,7 @@ services:
       test: ['CMD', 'pg_isready', '-U', 'postgres']
     volumes:
       - ./postgres14:/var/lib/postgresql/data
+      - /var/www/vhosts/dedonnie.social/mastodon/db_backups:/backups
     environment:
       - 'POSTGRES_HOST_AUTH_METHOD=trust'
 
@@ -72,7 +73,8 @@ services:
       - redis
       # - es
     volumes:
-      - ./public/system:/mastodon/public/system
+      - /var/cache/mastodon:/mastodon/public/system/cache
+      - /var/www/vhosts/dedonnie.social/mastodon/public/system:/mastodon/public/system
 
   streaming:
     image: tootsuite/mastodon:v4.0.2
@@ -103,7 +105,8 @@ services:
       - external_network
       - internal_network
     volumes:
-      - ./public/system:/mastodon/public/system
+      - /var/cache/mastodon:/mastodon/public/system/cache
+      - /var/www/vhosts/dedonnie.social/mastodon/public/system:/mastodon/public/system
     healthcheck:
       test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 6' || false"]
 
