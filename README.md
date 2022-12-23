@@ -9,6 +9,9 @@ cd /var/mastodon
 docker-compose run --rm web bundle exec rake mastodon:setup
 ```
 
+### Plesk tasks
+Certificates
+
 ### Running tootctl commands
 ```
 cd /var/mastodon
@@ -23,3 +26,4 @@ We overwrite the plesk-generated nginx config. Should Plesk overwrite that again
 - ~~set public directory to be owned by mastodon user (uid/gid 991)~~
 - ~~choose a better location on the filesystem -> have only files that need to be backed up in the Plesk webdir~~
 - automate nginx config restorer after plesk wrote to it
+- check if we can create certificates from the cli in plesk
