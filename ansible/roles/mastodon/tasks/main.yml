@@ -73,11 +73,11 @@
     owner: 70
     mode: 0700
 
-- name: Set file and dir permissions and owner for mastodon cache dir
-  ansible.builtin.file:
-    path: /var/cache/mastodon/
-    owner: 991
-    mode: 0755
+# - name: Set file and dir permissions and owner for mastodon cache dir
+#   ansible.builtin.file:
+#     path: /var/cache/mastodon/
+#     owner: 991
+#     mode: 0755
 
 - name: Set file and dir permissions and owner for plesk mastodon dir
   ansible.builtin.file:
