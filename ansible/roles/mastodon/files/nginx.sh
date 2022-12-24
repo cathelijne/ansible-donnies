@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cp nginx.conf /var/www/vhosts/system/dedonnie.social/conf/nginx.conf
+cp /var/mastodon/nginx.conf /var/www/vhosts/system/dedonnie.social/conf/nginx.conf
 systemctl reload nginx

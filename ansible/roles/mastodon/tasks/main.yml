@@ -38,11 +38,17 @@
     name: nginx
     state: reloaded
 
+- name: Allow incrontab for root
+  ansible.builtin.lineinfile:
+    create: true
+    path: /etc/incron.allow
+    line: root
+
 - name: Install incrontab for root
   ansible.builtin.lineinfile:
     create: true
     path: /var/spool/incron/root
-    line: /var/www/vhosts/system/dedonnie.social/conf/nginx.conf  IN_CLOSE_WRITE,MODIFY,DELETE  /var/mastodon/nginx.sh
+    line: "/var/www/vhosts/system/dedonnie.social/conf/nginx.conf\tIN_CLOSE_WRITE,IN_DELETE,IN_MODIFY\t/var/mastodon/nginx.sh"
     owner: root
     group: root
     mode: '0600'
