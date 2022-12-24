@@ -1,5 +1,10 @@
 # code: language=ansible
 ---
+- name: Add backports repository into sources list
+  ansible.builtin.apt_repository:
+    repo: deb http://deb.debian.org/debian bullseye-backports main
+    state: present
+
 - name: Update apt
   ansible.builtin.apt:
     update_cache: true

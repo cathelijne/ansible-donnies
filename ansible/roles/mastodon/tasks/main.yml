@@ -3,15 +3,23 @@
     path: /var/mastodon
     state: directory
 
-- name: Copy docker-compose.yml
+- name: Copy docker-compose.yml and other files
   ansible.builtin.copy:
     src: files/{{ item }}
     dest: /var/mastodon/{{ item }}
+    mode: 0644
   loop:
   - docker-compose.yml
   - .env.production
-  - nginx.sh
   - nginx.conf
+
+- name: Copy scripts
+  ansible.builtin.copy:
+    src: files/{{ item }}
+    dest: /var/mastodon/{{ item }}
+    mode: 0755
+  loop:
+  - nginx.sh
   - setup.sh
 
 - name: Deploy mastodon
@@ -30,13 +38,22 @@
     name: nginx
     state: reloaded
 
+- name: Install incrontab for root
+  ansible.builtin.lineinfile:
+    create: true
+    path: /var/spool/incron/root
+    line: /var/www/vhosts/system/dedonnie.social/conf/nginx.conf  IN_CLOSE_WRITE,MODIFY,DELETE  /var/mastodon/nginx.sh
+    owner: root
+    group: root
+    mode: '0600'
+
 - name: Backup db
   ansible.builtin.cron:
     name: DB Backup
-    hour: 5
-    minute: 22
+    hour: "*/6"
+    minute: 7
     state: present
-    job: docker exec -it mastodon_db_1 su - postgres bash -c "pg_dump postgres > /backups/$(date --iso-8601).sql"
+    job: /usr/bin/docker exec mastodon_db_1 su postgres bash -c "pg_dump postgres -f /backups/$(date -uIminutes).sql"
 
 - name: Set file and dir permissions and owner for mastodon dir
   ansible.builtin.file:
